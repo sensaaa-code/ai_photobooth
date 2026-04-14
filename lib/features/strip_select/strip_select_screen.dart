@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router/route_paths.dart';
+import '../../session/widgets/session_countdown_widget.dart';
 
 class StripSelectScreen extends StatelessWidget {
   const StripSelectScreen({super.key});
@@ -9,7 +10,10 @@ class StripSelectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Pilih Strip Layout')),
+      appBar: AppBar(
+        title: const Text('Pilih Strip Layout'),
+        actions: const [SessionCountdownWidget()],
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

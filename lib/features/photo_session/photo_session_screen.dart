@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router/route_paths.dart';
+import '../../session/widgets/session_countdown_widget.dart';
 
 class PhotoSessionScreen extends StatelessWidget {
   const PhotoSessionScreen({super.key});
@@ -9,7 +10,10 @@ class PhotoSessionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sesi Foto (4x)')),
+      appBar: AppBar(
+        title: const Text('Sesi Foto (4x)'),
+        actions: const [SessionCountdownWidget()],
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
