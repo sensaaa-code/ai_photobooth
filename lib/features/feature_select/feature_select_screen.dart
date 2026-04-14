@@ -25,7 +25,10 @@ class _FeatureSelectScreenState extends ConsumerState<FeatureSelectScreen> {
   void initState() {
     super.initState();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
+      // Only rebuild when a session is actively counting down.
+      if (mounted && ref.read(sessionControllerProvider).isActive) {
+        setState(() {});
+      }
     });
   }
 
@@ -101,10 +104,7 @@ class _ActiveInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final remaining = session.remainingDuration;
-    final minutes =
-        remaining.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final seconds =
-        remaining.inSeconds.remainder(60).toString().padLeft(2, '0');
+    final label = formatSessionRemaining(remaining);
     final isUrgent = remaining.inSeconds < 60;
 
     return Column(
@@ -137,7 +137,7 @@ class _ActiveInfo extends StatelessWidget {
             ),
             const SizedBox(width: 6),
             Text(
-              'Sisa: $minutes:$seconds',
+              'Sisa: $label',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,

@@ -28,7 +28,10 @@ class _OperatorPanelScreenState extends ConsumerState<OperatorPanelScreen> {
   void initState() {
     super.initState();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
+      // Only rebuild when a session is actively counting down.
+      if (mounted && ref.read(sessionControllerProvider).isActive) {
+        setState(() {});
+      }
     });
   }
 
@@ -92,7 +95,7 @@ class _OperatorPanelScreenState extends ConsumerState<OperatorPanelScreen> {
                         if (session.isActive)
                           _StatusRow(
                             label: 'Sisa waktu',
-                            value: _formatRemaining(session.remainingDuration),
+                            value: formatSessionRemaining(session.remainingDuration),
                             valueColor: session.remainingDuration.inSeconds < 60
                                 ? Colors.red
                                 : Colors.green,
@@ -159,12 +162,6 @@ class _OperatorPanelScreenState extends ConsumerState<OperatorPanelScreen> {
         ),
       ),
     );
-  }
-
-  String _formatRemaining(Duration d) {
-    final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
-    return '$minutes:$seconds';
   }
 
   String _statusLabel(SessionStatus status) {
