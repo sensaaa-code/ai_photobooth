@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,11 +12,37 @@ import '../../session/session_state.dart';
 ///
 /// Shows the last known session status so the operator can diagnose issues,
 /// and provides a "Reset session" button to clear state and return to idle.
-class OperatorPanelScreen extends ConsumerWidget {
+class OperatorPanelScreen extends ConsumerStatefulWidget {
   const OperatorPanelScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<OperatorPanelScreen> createState() =>
+      _OperatorPanelScreenState();
+}
+
+class _OperatorPanelScreenState extends ConsumerState<OperatorPanelScreen> {
+  /// Ticks every second while a session is active so remaining time stays live.
+  Timer? _ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      // Only rebuild when a session is actively counting down.
+      if (mounted && ref.read(sessionControllerProvider).isActive) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final session = ref.watch(sessionControllerProvider);
 
     return Scaffold(
@@ -64,6 +92,14 @@ class OperatorPanelScreen extends ConsumerWidget {
                               ? _formatDateTime(session.expiresAt!)
                               : '—',
                         ),
+                        if (session.isActive)
+                          _StatusRow(
+                            label: 'Sisa waktu',
+                            value: formatSessionRemaining(session.remainingDuration),
+                            valueColor: session.remainingDuration.inSeconds < 60
+                                ? Colors.red
+                                : Colors.green,
+                          ),
                         if (session.abortReason != null)
                           _StatusRow(
                             label: 'Alasan abort',

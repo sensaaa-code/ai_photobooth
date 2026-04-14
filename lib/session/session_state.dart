@@ -87,3 +87,13 @@ class SessionState {
   String toString() =>
       'SessionState(id=$sessionId, status=$status, expiresAt=$expiresAt)';
 }
+
+/// Formats [duration] as `mm:ss` (e.g. `04:37`).
+///
+/// Used by both [FeatureSelectScreen] and [OperatorPanelScreen] to display
+/// live session-remaining time in a consistent format.
+String formatSessionRemaining(Duration duration) {
+  final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+  final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+  return '$minutes:$seconds';
+}
