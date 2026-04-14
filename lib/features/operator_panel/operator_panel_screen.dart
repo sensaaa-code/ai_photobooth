@@ -160,10 +160,10 @@ class OperatorPanelScreen extends ConsumerWidget {
 
   String _formatDateTime(DateTime dt) {
     // Simple local format: HH:mm:ss DD/MM/YYYY
-    final h = dt.hour.toString().padLeft(2, '0');
-    final m = dt.minute.toString().padLeft(2, '0');
-    final s = dt.second.toString().padLeft(2, '0');
-    return '$h:$m:$s  ${dt.day}/${dt.month}/${dt.year}';
+    final hour = dt.hour.toString().padLeft(2, '0');
+    final minute = dt.minute.toString().padLeft(2, '0');
+    final second = dt.second.toString().padLeft(2, '0');
+    return '$hour:$minute:$second  ${dt.day}/${dt.month}/${dt.year}';
   }
 }
 
